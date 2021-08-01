@@ -2,6 +2,21 @@ module.exports = {
   lintOnSave: false,
   pwa: {
     name: 'MalasNgitung',
+    manifestOptions: {
+      name: "MalasNgitung",
+      short_name: "MalasNgitung",
+      start_url: "./",
+      display: "standalone",
+      theme_color: "#22252D",
+      icons: [
+        {
+          src: "img/icons/msapplication-icon-144x144.png",
+          sizes: "512x512",
+          type: "image/png",
+          purpose: "any maskable",
+        },
+      ],
+    },
     themeColor: '#22252D',
     msTileColor: '#22252D',
     appleMobileWebAppCapable: 'yes',

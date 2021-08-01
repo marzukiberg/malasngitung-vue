@@ -93,7 +93,7 @@
 export default {
   name: 'Calculator',
   created() {
-    document.title = 'Malasngitung';
+    document.title = 'MalasNgitung';
   },
   data() {
     return {

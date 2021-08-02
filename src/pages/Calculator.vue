@@ -68,6 +68,7 @@
         p-6
         rounded-t-3xl
         gap-3
+        mx-3
         place-items-center place-content-center
         ${theme === 'light' ? 'bg-gray-200' : 'bg-dark700'}
         `"

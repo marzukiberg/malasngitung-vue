@@ -3,17 +3,34 @@ module.exports = {
   pwa: {
     name: 'MalasNgitung',
     manifestOptions: {
-      name: "MalasNgitung",
-      short_name: "MalasNgitung",
-      start_url: "./",
-      display: "standalone",
-      theme_color: "#22252D",
+      theme_color: '#22252D',
+      background_color: '#22252D',
+      display: 'standalone',
+      scope: '/',
+      start_url: '/',
+      name: 'MalasNgitung',
+      short_name: 'MalasNgitung',
+      description: 'Calculator made with VueJS',
       icons: [
         {
-          src: "img/icons/msapplication-icon-144x144.png",
-          sizes: "512x512",
-          type: "image/png",
-          purpose: "any maskable",
+          src: 'img/icons/icon-192x192.png',
+          sizes: '192x192',
+          type: 'image/png',
+        },
+        {
+          src: 'img/icons/icon-256x256.png',
+          sizes: '256x256',
+          type: 'image/png',
+        },
+        {
+          src: 'img/icons/icon-384x384.png',
+          sizes: '384x384',
+          type: 'image/png',
+        },
+        {
+          src: 'img/icons/icon-512x512.png',
+          sizes: '512x512',
+          type: 'image/png',
         },
       ],
     },
@@ -21,12 +38,5 @@ module.exports = {
     msTileColor: '#22252D',
     appleMobileWebAppCapable: 'yes',
     appleMobileWebAppStatusBarStyle: 'black',
-    iconPaths: {
-      favicon32: 'img/icons/favicon-32x32.png',
-      favicon16: 'img/icons/favicon-16x16.png',
-      appleTouchIcon: 'img/icons/apple-touch-icon-152x152.png',
-      maskIcon: 'img/icons/safari-pinned-tab.svg',
-      msTileImage: 'img/icons/msapplication-icon-144x144.png',
-    },
   },
 };

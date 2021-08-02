@@ -157,7 +157,7 @@ export default {
       state: {
         display: 0,
         calculation: 0,
-        recors: 0,
+        records: 0,
         waiting: false,
       },
     };

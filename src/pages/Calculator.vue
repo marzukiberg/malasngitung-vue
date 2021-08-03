@@ -163,6 +163,9 @@ export default {
       },
     };
   },
+  updated() {
+    console.log(this.$data.state);
+  },
   methods: {
     handleButton(e) {
       String.prototype.replaceAt = function (index, replacement) {
@@ -174,17 +177,21 @@ export default {
         );
       };
       const text = e.target.dataset.text.toString();
-      const lastIsDot = () => this.state.display.toString().slice(-1) === ".";
-      const displayIsZero = () => this.state.display == "0";
       const display = this.state.display.toString();
-      const splitd = display.split(" ");
-      const operators = "+-x÷";
-      const operatorCount = splitd.filter((item) =>
-        operators.includes(item)
-      ).length;
-      const lastInput = display.charAt(display.length - 2);
-      const operatorsRegex = new RegExp(/[x|÷|+|-]/g);
-      const isOperatorIncluded = display.match(operatorsRegex);
+
+      const lastIsDot = () => display.slice(-1) === ".";
+      const displayIsZero = () => display == "0";
+      const firstInput = display.charAt(0);
+      const firstTwoInput = display.substring(0, 2);
+      const lastInput = display.charAt(display.length - 1);
+      const operators = new RegExp(/[x|÷|+|-]/g);
+      const lastIsOperator = lastInput.match(operators);
+      const isOperatorIncluded = display
+        .substring(1, display.length)
+        .match(operators);
+      const includeDot = display.includes(".");
+      const operatorsCount = isOperatorIncluded?.length;
+      const removedScopedMinus = display.substring(2, display.length - 1);
 
       switch (true) {
         case text === "reset":
@@ -196,6 +203,10 @@ export default {
           };
           break;
         case text === "ac":
+          if (firstTwoInput === "-(" && lastInput === ")") {
+            this.state.display = removedScopedMinus;
+            return;
+          }
           if (display.length === 1) {
             this.state.display = 0;
             return;
@@ -203,55 +214,45 @@ export default {
           this.state.display = display.trim().slice(0, -1);
           break;
         case text === "plusmin":
-          if (isOperatorIncluded && splitd.length > 1) {
-            if (lastInput.match(operatorsRegex)) return;
-            if (
-              display.substring(0, 2) === "-(" &&
-              display.substring(display.length - 1) === ")"
-            ) {
-              this.state.display = display.substring(2, display.length - 1);
-              return;
-            }
-            this.state.display = `-(${display})`;
-          } else {
+          if (lastInput.match(operators)) return;
+          if (firstTwoInput === "-(" && lastInput === ")") {
+            this.state.display = removedScopedMinus;
+          } else if (firstTwoInput.match(/[0-9]/g) && !isOperatorIncluded) {
             this.state.display = -display;
+          } else {
+            this.state.display = `-(${display})`;
           }
           break;
         case text === "percent":
-          if (lastInput.match(operatorsRegex)) {
+          if (lastInput.match(operators)) {
             this.state.display = display.replaceAt(display.length - 2, "");
           }
 
           this.calculate("percent");
         case text === "=":
-          if (displayIsZero() || lastIsDot()) return;
-          if (operators.includes(lastInput)) return;
+          if (displayIsZero() || lastIsDot() || lastIsOperator) return;
           this.calculate();
           break;
         case text === ".":
+          const numbersOnly = display.split(operators);
           if (displayIsZero()) {
             this.state.display += ".";
+            return;
           }
+          if (includeDot) return;
+          this.state.display += text;
           break;
-        case operators.includes(text):
+        case text.match(operators) !== null:
           if (displayIsZero() || lastIsDot()) return;
-          if (lastInput && display.substring(0, 1) !== "-") {
-            if (operators.includes(lastInput)) {
-              this.state.display = display.replace(
-                display.substring(display.length - 1, 2),
-                text
-              );
-              return;
-            }
+          if (lastInput.match(operators)) {
+            this.state.display =
+              display.substring(0, display.length - 1) + text;
+            return;
           }
-          if (operatorCount > 2) {
-            this.state.calculation = this.state.display;
-            this.calculate();
-          }
-          this.state.display += ` ${text} `;
-          this.state.records += ` ${text} `;
+          this.state.display += text;
           break;
         default:
+          if (lastInput === ")") return;
           if (displayIsZero()) {
             this.state.records = text;
             this.state.display = text;
@@ -264,10 +265,6 @@ export default {
     },
     calculate(mode = "default") {
       let display = this.state.display.toString();
-      let replaceObj = {
-        x: "*",
-        "÷": "/",
-      };
       display = display.replaceAll("x", "*");
       display = display.replaceAll("÷", "/");
 
